@@ -1,0 +1,13 @@
+# getty console service
+[Unit]
+Description=Serial Getty Console
+BindTo=dev-%i.device
+After=dev-%i.device
+
+[Service]
+ExecStart=/usr/sbin/agetty 115200 %I vt102
+Type=oneshot
+
+[Install]
+WantedBy=multi-user.target
+

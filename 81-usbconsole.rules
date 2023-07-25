@@ -1,0 +1,7 @@
+# usb console udev rules
+#
+ACTION=="add",SUBSYSTEM=="tty", ATTRS{idVendor}=="10c4", ATTRS{idProduct}=="ea60", ATTRS{serial}=="99900001",SYMLINK+="boxs1",TAG+="systemd",ENV{SYSTEMD_WANTS}+="getty-c@%k.service"
+
+
+
+
