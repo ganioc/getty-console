@@ -9,8 +9,8 @@ function send_data(){
 	i2ctransfer -y 1 w2@0x3C 0x40 $1
 }
 function init(){
-	send_cmd 0xAE
-	send_cmd 0xD5
+	send_cmd 0xAE # LED off
+	send_cmd 0xD5 
 	send_cmd 0x80
 	send_cmd 0xA8
 	send_cmd 0x3F
@@ -27,6 +27,7 @@ function init(){
 	send_cmd 0x00
 	send_cmd 0xA1 # SEGREMAP
 	send_cmd 0xC8 # COM SCAN DEC
+
 	send_cmd 0xDA #
 	send_cmd 0x12
 	send_cmd 0x81 # Contrast
