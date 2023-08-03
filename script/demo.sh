@@ -2,11 +2,18 @@
 
 # i2cdetect -y 1
 
+LCD_WIDTH=128
+LCD_HEIGHT=64
+
+
 function send_cmd(){
 	i2ctransfer -y 1 w2@0x3C 0x00 $1
 }
 function send_data(){
 	i2ctransfer -y 1 w2@0x3C 0x40 $1
+}
+function send_data8(){
+	i2ctransfer -y 1 w9@0x3C 0x40 $1 $2 $3 $4 $5 $6 $7 $8
 }
 function init(){
 	send_cmd 0xAE # LED off
@@ -93,8 +100,10 @@ function clear_f103(){
 		send_cmd $i  # set page addr
 		send_cmd 0x00 # column low addr
 		send_cmd 0x10 # column high addr
-		for n in $(seq 0 131); do 
-			send_data 0x0
+		for n in $(seq 0 1 ); do 
+			# send_data8 0 0 0 0 0 0 0 0 
+			# send_data 0
+			i2ctransfer -y 1 w65@0x3C 0x40 0 0 0 0  0 0 0 0  0 0 0 0  0 0 0 0  0 0 0 0  0 0 0 0   0 0 0 0  0 0 0 0  0 0 0 0  0 0 0 0  0 0 0 0  0 0 0 0  0 0 0 0  0 0 0 0   0 0 0 0  0 0 0 0   
 		done 
 	done
 }
@@ -103,12 +112,14 @@ function on_f103(){
 		send_cmd $i  # set page addr
 		send_cmd 0x00 # column low addr
 		send_cmd 0x10 # column high addr
-		for n in $(seq 0 131); do 
+		for n in $(seq 0 127 ); do 
 			send_data 0xFF
 		done 
 	done
 }
-
+clear_display(){
+	clear_f103
+}
 
 # sequence
 echo -e "Use i2c-tools to control the i2c LCD SH1106"
@@ -124,7 +135,11 @@ for i in $(seq 0 2 ); do
 	# sleep 1
 done
 
-off_f103
+clear_display
+
+
+
+# off_f103
 echo -e "--End--"
 
 
