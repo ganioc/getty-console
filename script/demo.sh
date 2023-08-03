@@ -117,10 +117,15 @@ function on_f103(){
 		done 
 	done
 }
-clear_display(){
+function clear_display(){
 	clear_f103
 }
-
+function draw_pixel(){
+	send_cmd  0
+	send_cmd  0x00
+	send_cmd  0x14
+	send_data 0xFF
+}
 # sequence
 echo -e "Use i2c-tools to control the i2c LCD SH1106"
 echo -e "init"
@@ -137,6 +142,7 @@ done
 
 clear_display
 
+draw_pixel
 
 
 # off_f103
