@@ -1,3 +1,6 @@
 [submodule "Adafruit_SH1106"]
 	path = Adafruit_SH1106
 	url = https://github.com/wonho-maker/Adafruit_SH1106.git
+[submodule "esp8266-oled-sh1106"]
+	path = esp8266-oled-sh1106
+	url = https://github.com/rene-mt/esp8266-oled-sh1106.git
