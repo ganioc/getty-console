@@ -5,35 +5,49 @@
 function send_cmd(){
 	i2ctransfer -y 1 w2@0x3C 0x00 $1
 }
+function send_data(){
+	i2ctransfer -y 1 w2@0x3C 0x40 $1
+}
 function init(){
-send_cmd 0xAE
-send_cmd 0xD5
-send_cmd 0x80
-send_cmd 0xA8
-send_cmd 0x3F
-send_cmd 0xD3
-send_cmd 0x00
-send_cmd 0x10
-send_cmd 0x20
-send_cmd 0x00
-send_cmd 0xA1
-send_cmd 0xC8
-send_cmd 0xDA
-send_cmd 0x12
-send_cmd 0x81
-send_cmd 0x9F
-send_cmd 0xd9
-send_cmd 0x22
-send_cmd 0xDB
-send_cmd 0x40
-send_cmd 0xA4
-send_cmd 0xA6
-# Turn ON
-send_cmd 0xAF
+	send_cmd 0xAE
+	send_cmd 0xD5
+	send_cmd 0x80
+	send_cmd 0xA8
+	send_cmd 0x3F
+	send_cmd 0xD3
+	send_cmd 0x00
 
+	send_cmd 0x40
+	send_cmd 0x8D
+
+	# internal VCC
+	send_cmd 0x14
+	
+	send_cmd 0x20 # Memory Mode
+	send_cmd 0x00
+	send_cmd 0xA1 # SEGREMAP
+	send_cmd 0xC8 # COM SCAN DEC
+	send_cmd 0xDA #
+	send_cmd 0x12
+	send_cmd 0x81 # Contrast
+	# internal VCC
+	send_cmd 0xCF
+
+	send_cmd 0xD9 # SET Precharge
+
+	# internal VCC
+	send_cmd 0xF1 
+
+	send_cmd 0xDB
+	send_cmd 0x40
+
+	send_cmd 0xA4
+	send_cmd 0xA6
+	# Turn ON
+	send_cmd 0xAF
 }
 function init_f103(){
-	send_cmd 0xAF # LED off
+	send_cmd 0xAE # LED off
 	send_cmd 0x02 # low column addr
 	send_cmd 0x10 # high column addr
 	send_cmd 0x40 # set start line addr
@@ -67,25 +81,29 @@ function init_f103(){
 	send_cmd 0x8D # chargepump enable
 	send_cmd 0x14 #
 
-	send_cmd 0xAF # turn on oled panel,
+	# send_cmd 0xA0 # turn on oled panel,
+	send_cmd 0xAF
+}
+function off_f103(){
+	send_cmd 0xAE
 }
 function clear_f103(){
-	for i in $(seq 1 7); do 
+	for i in $(seq 0xB0 0xB7); do 
 		send_cmd $i  # set page addr
-		send_cmd 0x02 # column low addr
+		send_cmd 0x00 # column low addr
 		send_cmd 0x10 # column high addr
 		for n in $(seq 0 127); do 
-			send_cmd 0x0
+			send_data 0x0
 		done 
 	done
 }
 function on_f103(){
-	for i in $(seq 1 7); do 
+	for i in $(seq 0xB0 0xB7); do 
 		send_cmd $i  # set page addr
-		send_cmd 0x02 # column low addr
+		send_cmd 0x00 # column low addr
 		send_cmd 0x10 # column high addr
 		for n in $(seq 0 127); do 
-			send_cmd 0x01
+			send_data 0x01
 		done 
 	done
 }
@@ -93,15 +111,19 @@ function on_f103(){
 
 # sequence
 echo -e "Use i2c-tools to control the i2c LCD SH1106"
+echo -e "init"
+init
 
-init_f103 
+for i in $(seq 0 1 ); do
+	echo -e "clear"
+	clear_f103
 
-sleep 1
-clear_f103
+	echo -e "on"
+	on_f103
+	# sleep 1
+done
 
-sleep 1
-on_f103
-
-sleep 1
-
+off_f103
 echo -e "--End--"
+
+
