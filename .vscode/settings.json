@@ -9,6 +9,8 @@
         "initializer_list": "cpp",
         "*.tcc": "cpp",
         "memory": "cpp",
-        "random": "cpp"
+        "random": "cpp",
+        "system_error": "cpp",
+        "cstddef": "cpp"
     }
 }

@@ -51,6 +51,7 @@ function init(){
 
 	send_cmd 0xA4
 	send_cmd 0xA6
+    
 	# Turn ON
 	send_cmd 0xAF
 }
